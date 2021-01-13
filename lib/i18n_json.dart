@@ -124,7 +124,7 @@ void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
 
 bool testSdkVersionForNullSafety(String version) {
   final exp1 = RegExp(r"^\^(\d+).(\d+).(\d+)$");
-  final exp2 = RegExp(r"^>=(\d+).(\d+).(\d+) <(\d+).(\d+).(\d+)$");
+  final exp2 = RegExp(r"^>=(\d+).(\d+).(\d+)(?:-\d+)? <(\d+).(\d+).(\d+)$");
   var match = exp1.firstMatch(version);
   if (match != null) {
     var vlist = [

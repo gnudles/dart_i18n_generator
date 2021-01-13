@@ -67,7 +67,7 @@ class I18n implements WidgetsLocalizations {
   /// function to be invoked when changing the language
   static LocaleChangeCallback${isNullSafetyOn ? "?" : ""} onLocaleChanged;
 
-  static I18n of(BuildContext context) =>
+  static I18n${isNullSafetyOn ? "?" : ""} of(BuildContext context) =>
     Localizations.of<I18n>(context, WidgetsLocalizations);
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, defaultLocale)};
@@ -97,9 +97,9 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     ];
   }
 
-  LocaleResolutionCallback resolution({Locale fallback}) {
-    return (Locale locale, Iterable<Locale> supported) {
-      if (isSupported(locale)) {
+  LocaleResolutionCallback resolution({Locale${isNullSafetyOn ? "?" : ""} fallback}) {
+    return (Locale${isNullSafetyOn ? "?" : ""} locale, Iterable<Locale> supported) {
+      if (${isNullSafetyOn ? "locale != null && " : ""}isSupported(locale)) {
         return locale;
       }
       final Locale fallbackLocale = fallback ?? supported.first;
@@ -112,7 +112,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     I18n._locale ??= locale;
     I18n._shouldReload = false;
     final String lang = I18n._locale != null ? I18n._locale.toString() : "";
-    final String languageCode = I18n._locale != null ? I18n._locale.languageCode : "";
+    final String languageCode = I18n._locale != null ? I18n._locale${isNullSafetyOn ? "!" : ""}.languageCode : "";
     ${localeList.map((e) => 'if ("' + (e as String).replaceAll('-', '_') + '" == lang) {\n\t\t\treturn SynchronousFuture<WidgetsLocalizations>(const _I18n_' + e.replaceAll("-", "_") + '());\n\t\t}').join('\n\t\telse ')}
     else ${localeList.map((e) => 'if ("' + (e as String).split('-')[0] + '" == languageCode) {\n\t\t\treturn SynchronousFuture<WidgetsLocalizations>(const _I18n_' + e.replaceAll("-", "_") + '());\n\t\t}').join('\n\t\telse ')}
 
