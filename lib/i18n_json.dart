@@ -111,6 +111,9 @@ void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
       } else if (value.every((element) => element is double)) {
         translationsList
             .add(TranslationEntry.array('List<double>', key, value));
+      } else if (value.every((element) => element is bool)) {
+        translationsList
+            .add(TranslationEntry.array('List<bool>', key, value));
       }
     } else if (value is String) {
       translationsList.add(TranslationEntry('String', key, value));
@@ -118,6 +121,8 @@ void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
       translationsList.add(TranslationEntry('int', key, value));
     } else if (value is double) {
       translationsList.add(TranslationEntry('double', key, value));
+    } else if (value is bool) {
+      translationsList.add(TranslationEntry('bool', key, value));
     }
   });
 }
