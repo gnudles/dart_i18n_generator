@@ -56,8 +56,8 @@ class I18n implements WidgetsLocalizations {
   const I18n();
   static Locale${isNullSafetyOn ? "?" : ""} _locale;
   static bool _shouldReload = false;
-
-  static set locale(Locale newLocale) {
+  static Locale${isNullSafetyOn ? "?" : ""} get locale => _locale;
+  static set locale(Locale${isNullSafetyOn ? "?" : ""} newLocale) {
     _shouldReload = true;
     I18n._locale = newLocale;
   }
