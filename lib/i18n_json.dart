@@ -97,32 +97,37 @@ class TranslationEntry {
 }
 
 void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
-    List<TranslationEntry> translationsList) {
+    Map<String,TranslationEntry> translationsList) {
+  final var_name_validator = RegExp(r"^[_A-Za-z]\w*$");
   content.forEach((key, value) {
+    if (var_name_validator.firstMatch(key) == null) {
+      key = key.replaceAll(RegExp(r"\W"), "_");
+      if (RegExp(r"^\d").firstMatch(key) != null) {
+        key = '_' + key;
+      }
+    }
     key = prefix + key;
     if (value is Map<String, dynamic>) {
       buildTranslationEntriesArray(value, key, translationsList);
     } else if (value is List<dynamic>) {
       if (value.every((element) => element is String)) {
-        translationsList.add(TranslationEntry.array('List<String>', key,
-            value.map((e) => escapeStringFromJson(e)).toList()));
+        translationsList[key] = TranslationEntry.array('List<String>', key,
+            value.map((e) => escapeStringFromJson(e)).toList());
       } else if (value.every((element) => element is int)) {
-        translationsList.add(TranslationEntry.array('List<int>', key, value));
+        translationsList[key] = TranslationEntry.array('List<int>', key, value);
       } else if (value.every((element) => element is double)) {
-        translationsList
-            .add(TranslationEntry.array('List<double>', key, value));
+        translationsList[key] = TranslationEntry.array('List<double>', key, value);
       } else if (value.every((element) => element is bool)) {
-        translationsList
-            .add(TranslationEntry.array('List<bool>', key, value));
+        translationsList[key] = TranslationEntry.array('List<bool>', key, value);
       }
     } else if (value is String) {
-      translationsList.add(TranslationEntry('String', key, value));
+      translationsList[key] = TranslationEntry('String', key, value);
     } else if (value is int) {
-      translationsList.add(TranslationEntry('int', key, value));
+      translationsList[key] = TranslationEntry('int', key, value);
     } else if (value is double) {
-      translationsList.add(TranslationEntry('double', key, value));
+      translationsList[key] = TranslationEntry('double', key, value);
     } else if (value is bool) {
-      translationsList.add(TranslationEntry('bool', key, value));
+      translationsList[key] = TranslationEntry('bool', key, value);
     }
   });
 }

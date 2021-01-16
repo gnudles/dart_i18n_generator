@@ -20,12 +20,13 @@ void main(List<String> arguments) {
         i18n_json
             .readJsonFile(path.join(config['localePath'], '$locale.json')))));
 
-    Map<String, List<i18n_json.TranslationEntry>> localeTranslationListMap = {};
+    Map<String, Map<String, i18n_json.TranslationEntry>>
+        localeTranslationListMap = {};
     //var localeTranslationListMap = {};
     List<Future<Null>> futureList = [];
     localeMap.forEach((localeName, jsonTree) {
       var retFuture = jsonTree.then((content) {
-        List<i18n_json.TranslationEntry> translationsList = [];
+        Map<String, i18n_json.TranslationEntry> translationsList = {};
         i18n_json.buildTranslationEntriesArray(content, '', translationsList);
         localeTranslationListMap[localeName] = translationsList;
       });
@@ -34,8 +35,24 @@ void main(List<String> arguments) {
     bool isNullSafetyOn = false;
     await isNullSafeFuture.then((value) => isNullSafetyOn = value);
     await Future.wait(futureList);
+
+
     var defaultLocaleTranslation = localeTranslationListMap[defaultLocale];
     localeTranslationListMap.remove(defaultLocale);
+    {
+      localeTranslationListMap.forEach((locale, translationsMap) {
+        var toBeRemoved = [];
+        translationsMap.keys.forEach((varname) {
+          if (!defaultLocaleTranslation.containsKey(varname)) {
+            defaultLocaleTranslation[varname] = translationsMap[varname];
+            toBeRemoved.add(varname);
+          }
+        });
+        toBeRemoved.forEach((element) {
+          translationsMap.remove(element);
+        });
+      });
+    }
     var writeSink =
         File(path.join(config['generatedPath'], "i18n.dart")).openWrite();
     writeSink.write('''
@@ -71,7 +88,7 @@ class I18n implements WidgetsLocalizations {
     Localizations.of<I18n>(context, WidgetsLocalizations);
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, defaultLocale)};
-${defaultLocaleTranslation.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
+${defaultLocaleTranslation.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
 }
 class _I18n_${defaultLocale.replaceAll("-", "_")} extends I18n {
   const _I18n_${defaultLocale.replaceAll("-", "_")}();
@@ -84,7 +101,7 @@ class _I18n_${locale.replaceAll("-", "_")} extends I18n {
   const _I18n_${locale.replaceAll("-", "_")}();
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, locale)};
-${translationList.map((element) => "\t" + element.comment() + "\n\t@override\n\t" + element.toString()).join("\n")}
+${translationList.values.map((element) => "\t" + element.comment() + "\n\t@override\n\t" + element.toString()).join("\n")}
 }
 ''');
     });
