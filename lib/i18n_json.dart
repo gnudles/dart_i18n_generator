@@ -95,7 +95,11 @@ class TranslationEntry {
   List<String>
       variables; // the optional variables... cannot be used in array mode.
 }
-
+extension StringCapitalizeExtension on String {
+    String capitalize() {
+      return "${this[0].toUpperCase()}${this.substring(1)}";
+    }
+}
 void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
     Map<String, TranslationEntry> translationsList) {
   final var_name_validator = RegExp(r"^[_A-Za-z]\w*$");
@@ -105,6 +109,10 @@ void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
       if (RegExp(r"^\d").firstMatch(key) != null) {
         key = '_' + key;
       }
+    }
+    if (prefix.isNotEmpty)
+    {
+      key = key.capitalize();
     }
     key = prefix + key;
     if (value is Map<String, dynamic>) {
