@@ -1,5 +1,5 @@
 name: i18n_json
-description: A sample command-line application.
+description: An alternative dart code generator for the vs-code plugin "vscode-flutter-i18n-json"
 # version: 1.0.0
 # homepage: https://www.example.com
 

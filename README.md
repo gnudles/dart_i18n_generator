@@ -17,8 +17,14 @@ dev_dependencies:
 and generate i18n.dart by running the command
 
 ```bash
-flutter pub run i18n_json:generate
+flutter pub run i18n_json
 ```
+
+## Features
+
+- Full compatibility with the vscode plugin.
+- Auto-detection of "Sound Null Safety"
+- Comments (through YAML, see notes below)
 
 ## Notes
 
