@@ -1,4 +1,4 @@
-import 'package:i18n_json/i18n_json.dart';
+import 'package:i18n_json/misc.dart';
 import 'package:test/test.dart';
 
 void main() {
