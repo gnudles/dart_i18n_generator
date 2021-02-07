@@ -97,7 +97,7 @@ class TranslationEntry {
 }
 
 void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
-    Map<String,TranslationEntry> translationsList) {
+    Map<String, TranslationEntry> translationsList) {
   final var_name_validator = RegExp(r"^[_A-Za-z]\w*$");
   content.forEach((key, value) {
     if (var_name_validator.firstMatch(key) == null) {
@@ -116,9 +116,11 @@ void buildTranslationEntriesArray(Map<String, dynamic> content, String prefix,
       } else if (value.every((element) => element is int)) {
         translationsList[key] = TranslationEntry.array('List<int>', key, value);
       } else if (value.every((element) => element is double)) {
-        translationsList[key] = TranslationEntry.array('List<double>', key, value);
+        translationsList[key] =
+            TranslationEntry.array('List<double>', key, value);
       } else if (value.every((element) => element is bool)) {
-        translationsList[key] = TranslationEntry.array('List<bool>', key, value);
+        translationsList[key] =
+            TranslationEntry.array('List<bool>', key, value);
       }
     } else if (value is String) {
       translationsList[key] = TranslationEntry('String', key, value);
@@ -175,4 +177,23 @@ Future<Map<String, dynamic>> getConfigFile() async {
 Future<Map<String, dynamic>> readJsonFile(String path) async {
   var contents = await File(path).readAsString();
   return jsonDecode(contents);
+}
+
+Future<dynamic> readYamlFile(String path) async {
+  var contents = await File(path).readAsString();
+  return loadYaml(contents);
+}
+
+dynamic convertYamlNode(dynamic input) {
+  if (input is YamlNode) {
+    if (input is YamlMap) {
+      return input
+          .map((key, value) => MapEntry(key as String, convertYamlNode(value)));
+    } else if (input is YamlList) {
+      return input.map((value) => convertYamlNode(value)).toList();
+    } else if (input is YamlScalar) {
+      return input.value;
+    }
+  }
+  return input;
 }
