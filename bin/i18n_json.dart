@@ -149,7 +149,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
 
   @override
   bool isSupported(Locale locale) {
-    for (var i = 0; i < supportedLocales.length && locale != null; i++) {
+    for (var i = 0; i < supportedLocales.length ${isNullSafetyOn ? "" : "&& locale != null "}; i++) {
       final l = supportedLocales[i];
       if (l.languageCode == locale.languageCode) {
         return true;
