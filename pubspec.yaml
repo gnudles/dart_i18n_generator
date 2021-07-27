@@ -1,6 +1,6 @@
 name: i18n_json
 description: An alternative dart code generator for the vs-code plugin "vscode-flutter-i18n-json"
-version: 0.9.0
+version: 0.9.1
 repository: https://github.com/gnudles/dart_i18n_generator
 
 environment:
