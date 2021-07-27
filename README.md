@@ -10,8 +10,7 @@ In order to use it, add it to dev dependencies in pubspec.yaml:
 
 ```yaml
 dev_dependencies:
-  i18n_json:
-    git: https://github.com/gnudles/dart_i18n_generator
+  i18n_json: ^0.9.0
 ```
 
 and generate i18n.dart by running the command
