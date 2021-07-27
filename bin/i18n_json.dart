@@ -1,6 +1,6 @@
 
 
-import 'package:i18n_json/misc.dart' as i18n_json;
+import 'package:i18n_json/i18n_json.dart' as i18n_json;
 import 'package:yaml/yaml.dart';
 import 'dart:async';
 import 'dart:io' as io;
