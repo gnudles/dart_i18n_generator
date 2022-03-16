@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:yaml/yaml.dart';
 import 'dart:convert';
-import 'package:path/path.dart' as path;
 
 String getTextDirection(Map<String, dynamic> config, String locale) {
   if ((config['rtl'] as List<dynamic>).contains(locale)) return 'rtl';
@@ -170,15 +169,16 @@ TranslationEntry buildPluralEntry(
   Map<String, TranslationEntry> decendants = {};
   pluralKeys.forEach((pluralKey) {
     if (content.containsKey(pluralKey)) {
-
       if (!alreadyGender &&
           (content[pluralKey] is Map<String, dynamic>) &&
           (content[pluralKey] as Map<String, dynamic>)
-              .containsKey("__gender") && (content[pluralKey] as Map<String, dynamic>)["__gender"] is Map<String, dynamic>) {
-        var genderEntry = buildGenderEntry(content[pluralKey]["__gender"], prefix, true);
+              .containsKey("__gender") &&
+          (content[pluralKey] as Map<String, dynamic>)["__gender"]
+              is Map<String, dynamic>) {
+        var genderEntry =
+            buildGenderEntry(content[pluralKey]["__gender"], prefix, true);
         if (genderEntry != null) decendants[pluralKey] = genderEntry;
       } else if (content[pluralKey] is String) {
-        
         decendants[pluralKey] =
             TranslationEntry("String", pluralKey, content[pluralKey]);
       }
@@ -199,8 +199,11 @@ TranslationEntry buildGenderEntry(
       if (!alreadyPlural &&
           (content[genderKey] is Map<String, dynamic>) &&
           (content[genderKey] as Map<String, dynamic>)
-              .containsKey("__plural") && (content[genderKey] as Map<String, dynamic>)["__plural"] is Map<String, dynamic>) {
-        var pluralEntry = buildPluralEntry(content[genderKey]["__plural"], prefix, true);
+              .containsKey("__plural") &&
+          (content[genderKey] as Map<String, dynamic>)["__plural"]
+              is Map<String, dynamic>) {
+        var pluralEntry =
+            buildPluralEntry(content[genderKey]["__plural"], prefix, true);
         if (pluralEntry != null) decendants[genderKey] = pluralEntry;
       } else if (content[genderKey] is String) {
         decendants[genderKey] =

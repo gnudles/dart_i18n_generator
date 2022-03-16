@@ -1,22 +1,15 @@
-
-
 import 'package:i18n_json/i18n_json.dart' as i18n_json;
-import 'package:yaml/yaml.dart';
 import 'dart:async';
 import 'dart:io' as io;
-import 'dart:convert';
 import 'package:path/path.dart' as path;
-
-
 
 Future<Map<String, dynamic>> tryYamlThenJson(String basepath) async {
   if (io.File(basepath + '.yaml').existsSync()) {
-    return i18n_json.convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
+    return i18n_json
+        .convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
   }
   return await i18n_json.readJsonFile(basepath + '.json');
 }
-
-
 
 void main(List<String> arguments) {
   var isNullSafeFuture = i18n_json.getProjectNullSafety();
@@ -95,8 +88,8 @@ class I18n implements WidgetsLocalizations {
   /// function to be invoked when changing the language
   static LocaleChangeCallback${isNullSafetyOn ? "?" : ""} onLocaleChanged;
 
-  static I18n${isNullSafetyOn ? "?" : ""} of(BuildContext context) =>
-    Localizations.of<I18n>(context, WidgetsLocalizations);
+  static I18n of(BuildContext context) =>
+    Localizations.of<I18n>(context, WidgetsLocalizations)${isNullSafetyOn ? "!" : ""};
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, defaultLocale)};
 ${defaultLocaleTranslation.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
