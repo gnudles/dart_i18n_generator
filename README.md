@@ -3,7 +3,7 @@
 ## Introduction
 
 An alternative dart code generator for the vs-code plugin "vscode-flutter-i18n-json",
-written in in dart.
+written in dart.
 This project is not a full replacement of the original plugin, it is only a replacement of the code generator, because the original code generator had many bugs and many missing features.
 This project in not a vs-code plugin, rather it is a simple cli to convert the json files into one dart class.
 In order to use it, add it to dev dependencies in pubspec.yaml:
