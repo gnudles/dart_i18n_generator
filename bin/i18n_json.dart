@@ -1,22 +1,16 @@
-
-
-import 'package:i18n_json/i18n_json.dart' as i18n_json;
-import 'package:yaml/yaml.dart';
 import 'dart:async';
 import 'dart:io' as io;
-import 'dart:convert';
+
+import 'package:i18n_json/i18n_json.dart' as i18n_json;
 import 'package:path/path.dart' as path;
-
-
 
 Future<Map<String, dynamic>> tryYamlThenJson(String basepath) async {
   if (io.File(basepath + '.yaml').existsSync()) {
-    return i18n_json.convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
+    return i18n_json
+        .convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
   }
   return await i18n_json.readJsonFile(basepath + '.json');
 }
-
-
 
 void main(List<String> arguments) {
   var isNullSafeFuture = i18n_json.getProjectNullSafety();
@@ -54,8 +48,8 @@ void main(List<String> arguments) {
       localeTranslationListMap.forEach((locale, translationsMap) {
         var toBeRemoved = [];
         translationsMap.keys.forEach((varname) {
-          if (!defaultLocaleTranslation.containsKey(varname)) {
-            defaultLocaleTranslation[varname] = translationsMap[varname];
+          if (!defaultLocaleTranslation!.containsKey(varname)) {
+            defaultLocaleTranslation[varname] = translationsMap[varname]!;
             toBeRemoved.add(varname);
           }
         });
@@ -99,7 +93,25 @@ class I18n implements WidgetsLocalizations {
     Localizations.of<I18n>(context, WidgetsLocalizations);
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, defaultLocale)};
-${defaultLocaleTranslation.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
+${defaultLocaleTranslation!.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
+  
+  @override
+  String get reorderItemUp => 'Move up';
+
+  @override
+  String get reorderItemDown => 'Move down';
+
+  @override
+  String get reorderItemLeft => 'Move left';
+
+  @override
+  String get reorderItemRight => 'Move right';
+
+  @override
+  String get reorderItemToEnd => 'Move to the end';
+
+  @override
+  String get reorderItemToStart => 'Move to the start';
 }
 class _I18n_${defaultLocale.replaceAll("-", "_")} extends I18n {
   const _I18n_${defaultLocale.replaceAll("-", "_")}();

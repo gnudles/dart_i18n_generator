@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:yaml/yaml.dart';
 import 'dart:convert';
-import 'package:path/path.dart' as path;
+import 'dart:io';
+
+import 'package:yaml/yaml.dart';
 
 String getTextDirection(Map<String, dynamic> config, String locale) {
   if ((config['rtl'] as List<dynamic>).contains(locale)) return 'rtl';
@@ -24,14 +24,14 @@ String escapeStringFromJson(String input) {
 String getVariablesFromStringAndEscapeIt(String input, List<String> variables) {
   final exp = RegExp(r"(?<!\\)(\{([_A-Za-z]\w*)\})");
   var matches = exp.allMatches(input);
-  variables.addAll(matches.map((e) => e.group(2)));
+  variables.addAll(matches.map((e) => e.group(2)!));
 
   String dollarSubstitute = ".i18n_json_dollar_sign.";
   int indexOffset = 0;
   matches.forEach((e) {
     int startIndex = e.start + indexOffset;
 
-    if (e.group(0).startsWith('{', 1)) {
+    if (e.group(0)!.startsWith('{', 1)) {
       startIndex++;
     }
     input = input.substring(0, startIndex) +
@@ -53,13 +53,16 @@ class TranslationEntry {
       entries = [entry];
     isArrayType = false;
   }
+
   TranslationEntry.array(this.type, this.name, this.entries) {
     isArrayType = true;
   }
+
   TranslationEntry.gender(this.name, this.decendants) {
     variables = collectVariables(["gender"], decendants.values).toList();
     isGender = true;
   }
+
   TranslationEntry.plural(this.name, this.decendants) {
     variables = collectVariables(["count"], decendants.values).toList();
     isPlural = true;
@@ -96,7 +99,7 @@ class TranslationEntry {
     }
   }
 
-  String getPluralGenderCode(TranslationEntry entry) {
+  String getPluralGenderCode(TranslationEntry? entry) {
     if (entry == null) {
       return "return null;";
     }
@@ -147,14 +150,14 @@ class TranslationEntry {
     }
   }
 
-  bool isArrayType;
+  late bool isArrayType;
   bool isPlural = false;
   bool isGender = false;
-  Map<String, TranslationEntry> decendants; //used only for gender & plural
-  String type;
+  late Map<String, TranslationEntry> decendants; //used only for gender & plural
+  late String type;
   String name;
-  List<dynamic> entries; // the single or array of translations
-  List<String>
+  late List<dynamic> entries; // the single or array of translations
+  late List<String>
       variables; // the optional variables... cannot be used in array mode.
 }
 
@@ -164,21 +167,25 @@ extension StringCapitalizeExtension on String {
   }
 }
 
-TranslationEntry buildPluralEntry(
-    Map<String, dynamic> content, String prefix, bool alreadyGender) {
+TranslationEntry? buildPluralEntry(
+  Map<String, dynamic> content,
+  String prefix,
+  bool alreadyGender,
+) {
   final pluralKeys = ["zero", "one", "other"];
   Map<String, TranslationEntry> decendants = {};
   pluralKeys.forEach((pluralKey) {
     if (content.containsKey(pluralKey)) {
-
       if (!alreadyGender &&
           (content[pluralKey] is Map<String, dynamic>) &&
           (content[pluralKey] as Map<String, dynamic>)
-              .containsKey("__gender") && (content[pluralKey] as Map<String, dynamic>)["__gender"] is Map<String, dynamic>) {
-        var genderEntry = buildGenderEntry(content[pluralKey]["__gender"], prefix, true);
+              .containsKey("__gender") &&
+          (content[pluralKey] as Map<String, dynamic>)["__gender"]
+              is Map<String, dynamic>) {
+        var genderEntry =
+            buildGenderEntry(content[pluralKey]["__gender"], prefix, true);
         if (genderEntry != null) decendants[pluralKey] = genderEntry;
       } else if (content[pluralKey] is String) {
-        
         decendants[pluralKey] =
             TranslationEntry("String", pluralKey, content[pluralKey]);
       }
@@ -190,8 +197,11 @@ TranslationEntry buildPluralEntry(
   return null;
 }
 
-TranslationEntry buildGenderEntry(
-    Map<String, dynamic> content, String prefix, bool alreadyPlural) {
+TranslationEntry? buildGenderEntry(
+  Map<String, dynamic> content,
+  String prefix,
+  bool alreadyPlural,
+) {
   final genderKeys = ["male", "female", "other"];
   Map<String, TranslationEntry> decendants = {};
   genderKeys.forEach((genderKey) {
@@ -199,8 +209,11 @@ TranslationEntry buildGenderEntry(
       if (!alreadyPlural &&
           (content[genderKey] is Map<String, dynamic>) &&
           (content[genderKey] as Map<String, dynamic>)
-              .containsKey("__plural") && (content[genderKey] as Map<String, dynamic>)["__plural"] is Map<String, dynamic>) {
-        var pluralEntry = buildPluralEntry(content[genderKey]["__plural"], prefix, true);
+              .containsKey("__plural") &&
+          (content[genderKey] as Map<String, dynamic>)["__plural"]
+              is Map<String, dynamic>) {
+        var pluralEntry =
+            buildPluralEntry(content[genderKey]["__plural"], prefix, true);
         if (pluralEntry != null) decendants[genderKey] = pluralEntry;
       } else if (content[genderKey] is String) {
         decendants[genderKey] =
@@ -279,18 +292,18 @@ bool testSdkVersionForNullSafety(String version) {
   var match = exp1.firstMatch(version);
   if (match != null) {
     var vlist = [
-      int.parse(match.group(1)),
-      int.parse(match.group(2)),
-      int.parse(match.group(3)),
+      int.parse(match.group(1)!),
+      int.parse(match.group(2)!),
+      int.parse(match.group(3)!),
     ];
     if (vlist[0] > 2) return true;
     if (vlist[0] < 2) return false;
     return (vlist[1] >= 12);
   } else if ((match = exp2.firstMatch(version)) != null) {
     var vlist1 = [
-      int.parse(match.group(1)),
-      int.parse(match.group(2)),
-      int.parse(match.group(3)),
+      int.parse(match!.group(1)!),
+      int.parse(match.group(2)!),
+      int.parse(match.group(3)!),
     ];
     /*var vlist2 = [
       int.parse(match.group(4)),
