@@ -1,22 +1,16 @@
-
-
-import 'package:i18n_json/i18n_json.dart' as i18n_json;
-import 'package:yaml/yaml.dart';
 import 'dart:async';
 import 'dart:io' as io;
-import 'dart:convert';
+
+import 'package:i18n_json/i18n_json.dart' as i18n_json;
 import 'package:path/path.dart' as path;
-
-
 
 Future<Map<String, dynamic>> tryYamlThenJson(String basepath) async {
   if (io.File(basepath + '.yaml').existsSync()) {
-    return i18n_json.convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
+    return i18n_json
+        .convertYamlNode(await (i18n_json.readYamlFile(basepath + '.yaml')));
   }
   return await i18n_json.readJsonFile(basepath + '.json');
 }
-
-
 
 void main(List<String> arguments) {
   var isNullSafeFuture = i18n_json.getProjectNullSafety();
@@ -47,6 +41,11 @@ void main(List<String> arguments) {
     bool isNullSafetyOn = false;
     await isNullSafeFuture.then((value) => isNullSafetyOn = value);
     await Future.wait(futureList);
+    if (isNullSafetyOn == false)
+    {
+      print("Old dart version detected. Please use i18n_json versions prior to version 1.0.0");
+      return;
+    }
 
     var defaultLocaleTranslation = localeTranslationListMap[defaultLocale];
     localeTranslationListMap.remove(defaultLocale);
@@ -54,8 +53,8 @@ void main(List<String> arguments) {
       localeTranslationListMap.forEach((locale, translationsMap) {
         var toBeRemoved = [];
         translationsMap.keys.forEach((varname) {
-          if (!defaultLocaleTranslation.containsKey(varname)) {
-            defaultLocaleTranslation[varname] = translationsMap[varname];
+          if (!defaultLocaleTranslation!.containsKey(varname)) {
+            defaultLocaleTranslation[varname] = translationsMap[varname]!;
             toBeRemoved.add(varname);
           }
         });
@@ -82,10 +81,10 @@ typedef LocaleChangeCallback = void Function(Locale locale);
 
 class I18n implements WidgetsLocalizations {
   const I18n();
-  static Locale${isNullSafetyOn ? "?" : ""} _locale;
+  static Locale? _locale;
   static bool _shouldReload = false;
-  static Locale${isNullSafetyOn ? "?" : ""} get locale => _locale;
-  static set locale(Locale${isNullSafetyOn ? "?" : ""} newLocale) {
+  static Locale? get locale => _locale;
+  static set locale(Locale? newLocale) {
     _shouldReload = true;
     I18n._locale = newLocale;
   }
@@ -93,13 +92,31 @@ class I18n implements WidgetsLocalizations {
   static const GeneratedLocalizationsDelegate delegate = GeneratedLocalizationsDelegate();
 
   /// function to be invoked when changing the language
-  static LocaleChangeCallback${isNullSafetyOn ? "?" : ""} onLocaleChanged;
+  static LocaleChangeCallback? onLocaleChanged;
 
-  static I18n${isNullSafetyOn ? "?" : ""} of(BuildContext context) =>
+  static I18n? of(BuildContext context) =>
     Localizations.of<I18n>(context, WidgetsLocalizations);
   @override
   TextDirection get textDirection => TextDirection.${i18n_json.getTextDirection(config, defaultLocale)};
-${defaultLocaleTranslation.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
+${defaultLocaleTranslation!.values.map((element) => "\t" + element.comment() + "\n\t" + element.toString()).join("\n")}
+  
+  @override
+  String get reorderItemUp => 'Move up';
+
+  @override
+  String get reorderItemDown => 'Move down';
+
+  @override
+  String get reorderItemLeft => 'Move left';
+
+  @override
+  String get reorderItemRight => 'Move right';
+
+  @override
+  String get reorderItemToEnd => 'Move to the end';
+
+  @override
+  String get reorderItemToStart => 'Move to the start';
 }
 class _I18n_${defaultLocale.replaceAll("-", "_")} extends I18n {
   const _I18n_${defaultLocale.replaceAll("-", "_")}();
@@ -125,9 +142,9 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     ];
   }
 
-  LocaleResolutionCallback resolution({Locale${isNullSafetyOn ? "?" : ""} fallback}) {
-    return (Locale${isNullSafetyOn ? "?" : ""} locale, Iterable<Locale> supported) {
-      if (${isNullSafetyOn ? "locale != null && " : ""}isSupported(locale)) {
+  LocaleResolutionCallback resolution({Locale? fallback}) {
+    return (Locale? locale, Iterable<Locale> supported) {
+      if (locale != null && isSupported(locale)) {
         return locale;
       }
       final Locale fallbackLocale = fallback ?? supported.first;
@@ -140,7 +157,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     I18n._locale ??= locale;
     I18n._shouldReload = false;
     final String lang = I18n._locale != null ? I18n._locale.toString() : "";
-    final String languageCode = I18n._locale != null ? I18n._locale${isNullSafetyOn ? "!" : ""}.languageCode : "";
+    final String languageCode = I18n._locale != null ? I18n._locale!.languageCode : "";
     ${localeList.map((e) => 'if ("' + (e as String).replaceAll('-', '_') + '" == lang) {\n\t\t\treturn SynchronousFuture<WidgetsLocalizations>(const _I18n_' + e.replaceAll("-", "_") + '());\n\t\t}').join('\n\t\telse ')}
     else ${localeList.map((e) => 'if ("' + (e as String).split('-')[0] + '" == languageCode) {\n\t\t\treturn SynchronousFuture<WidgetsLocalizations>(const _I18n_' + e.replaceAll("-", "_") + '());\n\t\t}').join('\n\t\telse ')}
 
@@ -149,7 +166,7 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
 
   @override
   bool isSupported(Locale locale) {
-    for (var i = 0; i < supportedLocales.length ${isNullSafetyOn ? "" : "&& locale != null "}; i++) {
+    for (var i = 0; i < supportedLocales.length ; i++) {
       final l = supportedLocales[i];
       if (l.languageCode == locale.languageCode) {
         return true;

@@ -10,7 +10,7 @@ In order to use it, add it to dev dependencies in pubspec.yaml:
 
 ```yaml
 dev_dependencies:
-  i18n_json: ^0.9.0
+  i18n_json: ^1.0.0
 ```
 
 and generate i18n.dart by running the command
